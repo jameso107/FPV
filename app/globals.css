@@ -1,0 +1,247 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "Menlo", "Consolas", "Liberation Mono", monospace;
+}
+
+.game-root {
+  position: fixed;
+  inset: 0;
+}
+
+.game-root canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ------------------------------ OSD ------------------------------ */
+
+.osd-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.osd {
+  position: absolute;
+  color: #eaffea;
+  font-size: clamp(13px, 1.6vw, 20px);
+  letter-spacing: 0.12em;
+  text-shadow:
+    -1.5px 0 #000, 1.5px 0 #000, 0 -1.5px #000, 0 1.5px #000,
+    0 0 6px rgba(120, 255, 160, 0.35);
+  white-space: pre;
+}
+
+.osd-tl { top: 3%; left: 3%; }
+.osd-tc { top: 3%; left: 50%; transform: translateX(-50%); }
+.osd-tc2 { top: 8%; left: 50%; transform: translateX(-50%); }
+.osd-tr { top: 3%; right: 3%; }
+.osd-gate {
+  top: 58%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffd2f4;
+}
+.osd-bl { bottom: 6%; left: 3%; }
+.osd-bl2 { bottom: 11%; left: 3%; }
+.osd-bc { bottom: 6%; left: 50%; transform: translateX(-50%); font-size: clamp(16px, 2vw, 26px); }
+.osd-bc2 { bottom: 11%; left: 50%; transform: translateX(-50%); }
+.osd-br { bottom: 6%; right: 3%; }
+.osd-br2 { bottom: 11%; right: 3%; }
+
+.osd-crash {
+  color: #ff5544;
+  animation: blink 0.4s steps(1) infinite;
+}
+
+.osd-toast {
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(18px, 2.4vw, 30px);
+  color: #ffe97a;
+}
+
+.osd-hint {
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffb054;
+}
+
+.crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+}
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: #eaffea;
+  box-shadow: 0 0 2px #000, 0 0 6px rgba(120, 255, 160, 0.5);
+}
+.crosshair::before {
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+  clip-path: polygon(0 0, 100% 0, 100% 32%, 0 32%, 0 68%, 100% 68%, 100% 100%, 0 100%);
+}
+.crosshair::after {
+  top: 50%;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  transform: translateY(-50%);
+  clip-path: polygon(0 0, 32% 0, 32% 100%, 0 100%, 68% 0, 100% 0, 100% 100%, 68% 100%);
+}
+
+/* ---------------------------- overlays ---------------------------- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(0, 4, 10, 0.62);
+  color: #dfe;
+  text-align: center;
+  padding: 24px;
+}
+
+.overlay h1 {
+  font-size: clamp(42px, 7vw, 92px);
+  letter-spacing: 0.28em;
+  color: #fff;
+  text-shadow:
+    0 0 18px rgba(255, 77, 225, 0.8),
+    0 0 44px rgba(31, 184, 212, 0.6);
+}
+
+.overlay .sub {
+  letter-spacing: 0.3em;
+  color: #9fd8e8;
+}
+
+.overlay .dim {
+  color: #7fa0aa;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+.overlay .warn {
+  color: #ffb054;
+}
+
+.overlay .note {
+  max-width: 560px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #cbb27f;
+  border: 1px solid #6b5c34;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: rgba(40, 32, 8, 0.5);
+}
+
+.overlay .big {
+  font-size: clamp(18px, 2.4vw, 28px);
+  letter-spacing: 0.2em;
+  color: #aff7c3;
+}
+
+.overlay-crash {
+  background: rgba(30, 0, 0, 0.45);
+}
+
+.crash-title {
+  color: #ff5544 !important;
+  text-shadow: 0 0 24px rgba(255, 60, 40, 0.9) !important;
+}
+
+.controls {
+  border-collapse: collapse;
+  font-size: clamp(11px, 1.2vw, 15px);
+  color: #bfe8d2;
+  letter-spacing: 0.08em;
+}
+
+.controls td {
+  border: 1px solid #2c4a44;
+  padding: 6px 18px;
+}
+
+.controls td:first-child {
+  color: #8fd8b8;
+}
+
+.blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.25; }
+}
+
+.stream-note {
+  position: absolute;
+  top: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #9fd8e8;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 4px #000;
+  animation: blink 1.4s steps(1) infinite;
+}
+
+.attrib {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 0 3px #000;
+}
+
+.boot-splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fff;
+  letter-spacing: 0.3em;
+  font-size: 40px;
+}
+
+.boot-splash small {
+  font-size: 13px;
+  color: #7fa0aa;
+}

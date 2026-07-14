@@ -1,0 +1,25 @@
+{
+  "name": "la-fpv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FPV drone racing simulator set in Los Angeles — fly with an Xbox controller in your browser",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "3d-tiles-renderer": "^0.4.10",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.174.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.174.0",
+    "typescript": "^5.7.0"
+  }
+}
