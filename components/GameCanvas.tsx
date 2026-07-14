@@ -97,6 +97,12 @@ export default function GameCanvas() {
           ? `CONTROLLER: ${hud.gamepadName.toUpperCase()}`
           : "CONTROLLER: NOT DETECTED — PRESS ANY BUTTON, OR USE KEYBOARD"
       );
+      set(
+        "arm-prompt",
+        hud.gamepadConnected
+          ? "HOLD LEFT STICK FULLY DOWN + PRESS A TO ARM"
+          : "PRESS A / ENTER TO ARM"
+      );
     };
     osdRaf = requestAnimationFrame(drawOsd);
 
@@ -126,8 +132,10 @@ export default function GameCanvas() {
           <div className="osd osd-br" data-osd="alt">0M</div>
           <div className="osd osd-br2" data-osd="speed">0 KM/H</div>
           <div className="osd osd-toast hidden" data-osd="toast"></div>
-          <div className="osd osd-hint" data-osd="hint"></div>
         </div>
+
+        {/* arm warnings live outside the OSD wrapper so they also show pre-arm */}
+        <div className="osd osd-hint" data-osd="hint"></div>
 
         {/* boot / ground-finding */}
         <div data-osd="loading" className="overlay">
@@ -154,12 +162,11 @@ export default function GameCanvas() {
               <tr><td>ACRO / ANGLE</td><td>Y BUTTON</td><td>M</td></tr>
             </tbody>
           </table>
-          <p className="blink big">PRESS A / ENTER TO ARM</p>
+          <p className="blink big" data-osd="arm-prompt">PRESS A / ENTER TO ARM</p>
           <p className="dim">
             fly through the pink gate to start the clock — hit all gates in
             order
           </p>
-          <p data-osd="hint2" className="warn"></p>
         </div>
 
         {/* crash screen */}

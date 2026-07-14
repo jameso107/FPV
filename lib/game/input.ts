@@ -68,7 +68,8 @@ export class InputManager {
     if (pad) {
       this.connected = true;
       this.gamepadName = pad.id.slice(0, 24);
-      const events: ButtonEvents = { arm: false, reset: false, toggleMode: false };
+      // keyboard buttons stay live alongside the pad so Enter/R/M always work
+      const events = this.takeKbEvents();
       const pressed = pad.buttons.map((b) => b.pressed);
       const edge = (i: number) => pressed[i] && !this.prevButtons[i];
       if (edge(0)) events.arm = true; // A
@@ -77,8 +78,11 @@ export class InputManager {
       this.prevButtons = pressed;
 
       const rawThrottle = (-pad.axes[1] + 1) / 2; // stick down = 0
+      // gamepad sticks self-center: squaring the input puts stick-center
+      // (0.5 -> 0.25) right at this quad's hover point instead of a climb
+      const curved = rawThrottle * rawThrottle;
       const inputs: ControlInputs = {
-        throttle: rawThrottle < 0.03 ? 0 : Math.min(1, rawThrottle),
+        throttle: rawThrottle < 0.03 ? 0 : Math.min(1, curved),
         yaw: dz(pad.axes[0]),
         pitch: dz(-pad.axes[3]), // push forward = pitch forward
         roll: dz(pad.axes[2]),

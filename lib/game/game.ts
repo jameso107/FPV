@@ -204,8 +204,10 @@ export class FpvGame {
         hud.phase = "ready";
       } else if (hud.phase === "ready" || hud.phase === "crashed") {
         if (inputs.throttle > 0.1) {
-          hud.armHint = "LOWER THROTTLE TO ARM";
-          this.hintUntil = now + 2200;
+          hud.armHint = this.input.connected
+            ? "HOLD LEFT STICK FULLY DOWN, THEN PRESS A"
+            : "THROTTLE TOO HIGH — HOLD S, THEN PRESS ENTER";
+          this.hintUntil = now + 2600;
         } else {
           if (hud.phase === "crashed") this.respawn();
           hud.phase = "armed";
