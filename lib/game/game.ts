@@ -102,6 +102,13 @@ export class FpvGame {
         cancelAnimationFrame(this.raf);
         this.tick(performance.now());
       }
+      // some embedded browsers resize the viewport without firing a resize event
+      if (
+        this.sizedW !== window.innerWidth ||
+        this.sizedH !== window.innerHeight
+      ) {
+        this.onResize();
+      }
     }, 250);
   }
 
@@ -116,7 +123,12 @@ export class FpvGame {
 
   /* ---------------------------------------------------------------- */
 
+  private sizedW = 0;
+  private sizedH = 0;
+
   private onResize = () => {
+    this.sizedW = window.innerWidth;
+    this.sizedH = window.innerHeight;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);

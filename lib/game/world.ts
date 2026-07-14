@@ -83,6 +83,29 @@ function createGoogleTilesWorld(
   tiles.setResolutionFromRenderer(camera, renderer);
   tiles.errorTarget = 20; // lower = sharper, higher = faster
 
+  // The library schedules tile download/parse jobs via requestAnimationFrame
+  // only, so streaming stalls completely in throttled or background tabs.
+  // Give every queue a timeout fallback that fires when rAF doesn't.
+  const hybridSchedule = (func: () => void) => {
+    let ran = false;
+    const run = () => {
+      if (!ran) {
+        ran = true;
+        func();
+      }
+    };
+    requestAnimationFrame(run);
+    window.setTimeout(run, 150);
+  };
+  const queues = tiles as unknown as Record<
+    string,
+    { _schedulingCallback?: (f: () => void) => void } | undefined
+  >;
+  for (const key of ["downloadQueue", "parseQueue", "processNodeQueue"]) {
+    const q = queues[key];
+    if (q) q._schedulingCallback = hybridSchedule;
+  }
+
   // Rotate the globe so our lat/lon sits at the origin with +Y up.
   const anyTiles = tiles as unknown as {
     setLatLonToYUp?: (lat: number, lon: number) => void;
